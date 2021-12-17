@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quote</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="zadanie3.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class QuoteSelector extends React.Component {
+        state = {
+          quotes: [],
+          currentQuote: "",
+          previousQuote: "",
+        };
+
+        componentDidMount() {
+          fetch(
+            "https://gist.githubusercontent.com/natebass/b0a548425a73bdf8ea5c618149fe1fce/raw/f4231cd5961f026264bb6bb3a6c41671b044f1f4/quotes.json?fbclid=IwAR3cqW0jgu1d3r7UPwQMj7KT9RxEPBx334jgp5FkCOkMmncrmTepHU-_WOs"
+          )
+            .then((res) => res.json())
+            .then((json) => this.setState({ quotes: json }));
+        }
+
+        render() {
+          const nextQuote = () => {
+            this.setState({ previousQuote: this.state.currentQuote });
+            this.setState({
+              currentQuote:
+                this.state.quotes[
+                  Math.floor(Math.random() * (this.state.quotes.length - 1) + 0)
+                ].quote,
+            });
+          };
+
+          const previousQuote = () => {
+            this.setState({ currentQuote: this.state.previousQuote });
+          };
+          return (
+            <div>
+              <button onClick={nextQuote}>Next quote</button>
+              <button onClick={previousQuote}>Previous quote</button>
+              <h1>{this.state.currentQuote}</h1>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<QuoteSelector />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
